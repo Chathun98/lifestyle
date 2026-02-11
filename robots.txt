@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://trendingpulse.github.io/sitemap.xml

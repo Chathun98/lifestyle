@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Trending Pulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'primary': '#ff3366',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justification-between h-20 items-center">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <ion-icon name="flash" class="text-3xl text-primary"></ion-icon>
+                    <span class="font-serif font-bold text-2xl tracking-tighter">Trending<span
+                            class="text-primary">Pulse</span></span>
+                </a>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="font-medium hover:text-primary transition">Home</a>
+                    <a href="about.html" class="font-medium text-primary transition">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-20 max-w-4xl mx-auto px-4 text-center">
+        <h1 class="text-5xl font-serif font-bold mb-8">About <span class="text-primary">Us</span></h1>
+
+        <div
+            class="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12 transform hover:scale-[1.01] transition duration-500">
+            <p class="text-xl text-gray-600 leading-relaxed mb-6">
+                Welcome to <strong>TrendingPulse</strong>, your ultimate destination for the latest viral sensations,
+                celebrity gossip, and lifestyle trends from across the USA and UK.
+            </p>
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Our platform is powered by cutting-edge AI technology that scours the digital world to bring you the
+                stories that matter <em>right now</em>. We believe in delivering content that is fast, fun, and always
+                fabulous.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="p-4">
+                    <div
+                        class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-primary text-3xl mx-auto mb-4">
+                        <ion-icon name="rocket-outline"></ion-icon>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Fast Updates</h3>
+                    <p class="text-sm text-gray-500">Real-time trends delivered instantly.</p>
+                </div>
+                <div class="p-4">
+                    <div
+                        class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-3xl mx-auto mb-4">
+                        <ion-icon name="diamond-outline"></ion-icon>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Premium Gossip</h3>
+                    <p class="text-sm text-gray-500">Exclusive stories you won't find elsewhere.</p>
+                </div>
+                <div class="p-4">
+                    <div
+                        class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl mx-auto mb-4">
+                        <ion-icon name="earth-outline"></ion-icon>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Global Reach</h3>
+                    <p class="text-sm text-gray-500">Connecting USA & UK lifestyles.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-primary to-pink-600 rounded-xl p-8 text-white shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Advertise With Us</h2>
+            <p class="mb-6 opacity-90">Reach millions of daily readers. Check out our partners below.</p>
+            <a href="https://omg10.com/4/10565898" target="_blank"
+                class="bg-white text-primary px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition inline-flex items-center gap-2">
+                Check Partner Offers <ion-icon name="open-outline"></ion-icon>
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t py-8 text-center text-gray-500 text-sm">
+        <p>&copy; 2026 TrendingPulse. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

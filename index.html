@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending Pulse - UK/USA Lifestyle & Gossip</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Tailwind Configuration for Colors/Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'primary': '#ff3366',
+                        'secondary': '#2d3748',
+                        'accent': '#667eea',
+                        'dark': '#1a202c',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justification-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <ion-icon name="flash" class="text-3xl text-primary"></ion-icon>
+                    <span class="font-serif font-bold text-2xl tracking-tighter">Trending<span class="text-primary">Pulse</span></span>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="font-medium hover:text-primary transition">Home</a>
+                    <a href="#trending" class="font-medium hover:text-primary transition">Trending</a>
+                    <a href="#gossip" class="font-medium hover:text-primary transition">Gossip</a>
+                    <a href="about.html" class="font-medium hover:text-primary transition">About</a>
+                    <a href="https://omg10.com/4/10565898" target="_blank" class="bg-primary hover:bg-red-600 text-white px-5 py-2 rounded-full font-bold shadow-lg transform hover:-translate-y-0.5 transition flex items-center gap-2">
+                        <ion-icon name="newspaper-outline"></ion-icon>
+                        Daily Scoop
+                    </a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button class="text-3xl text-gray-600" id="mobile-menu-btn">
+                        <ion-icon name="menu-outline"></ion-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-white border-t p-4 space-y-3 shadow-lg" id="mobile-menu">
+            <a href="index.html" class="block font-medium hover:text-primary">Home</a>
+            <a href="#trending" class="block font-medium hover:text-primary">Trending</a>
+            <a href="#gossip" class="block font-medium hover:text-primary">Gossip</a>
+            <a href="about.html" class="block font-medium hover:text-primary">About</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 -z-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-800 text-xs font-bold tracking-wide uppercase mb-4 animate-pulse">
+                Live Updates: USA & UK
+            </span>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+                Get the Latest <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">Gossip & Trends</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Your daily dose of celebrity news, lifestyle hacks, and viral stories - curated by AI, updated instantly.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button onclick="fetchNews()" class="bg-black text-white px-8 py-3 rounded-full font-semibold hover:opacity-80 transition flex items-center gap-2 shadow-xl">
+                    <ion-icon name="refresh-outline" class="animate-spin-slow"></ion-icon>
+                    Update Feed
+                </button>
+                <a href="https://omg10.com/4/10565898" target="_blank" class="bg-white border text-gray-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition shadow-sm">
+                    Hot Deals & More
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Featured Trend (Large Card) -->
+        <section id="featured-section" class="mb-16 hidden">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row group">
+                <div class="md:w-1/2 overflow-hidden h-64 md:h-auto relative">
+                    <img id="featured-image" src="https://source.unsplash.com/random/800x600/?lifestyle" alt="Featured" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <span class="absolute bottom-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded">TRENDING #1</span>
+                </div>
+                <div class="p-8 md:w-1/2 flex flex-col justify-center">
+                    <h2 id="featured-title" class="text-3xl font-serif font-bold mb-4 group-hover:text-primary transition">Loading Featured Story...</h2>
+                    <p id="featured-snippet" class="text-gray-600 mb-6 line-clamp-3">
+                        Stay tuned while we fetch the hottest story of the hour...
+                    </p>
+                    <a id="featured-link" href="#" class="inline-flex items-center text-primary font-bold hover:underline">
+                        Read Full Story <ion-icon name="arrow-forward-outline" class="ml-2"></ion-icon>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Layout -->
+        <div class="flex flex-col lg:flex-row gap-12">
+            
+            <!-- Articles Feed -->
+            <div class="lg:w-2/3">
+                <div class="flex justify-between items-end mb-8">
+                    <h3 class="text-2xl font-bold font-serif">Latest Stories</h3>
+                    <div class="flex gap-2 text-sm text-gray-500">
+                        <span class="bg-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-300">USA</span>
+                        <span class="bg-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-300">UK</span>
+                        <span class="bg-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-300">Viral</span>
+                    </div>
+                </div>
+
+                <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Dynamic Content Will Go Here -->
+                    <!-- Simulating Skeleton Loading -->
+                    <div class="animate-pulse bg-white rounded-xl h-96 shadow p-4">
+                        <div class="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                        <div class="h-20 bg-gray-200 rounded mb-4"></div>
+                    </div>
+                    <div class="animate-pulse bg-white rounded-xl h-96 shadow p-4 hidden md:block">
+                        <div class="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                        <div class="h-20 bg-gray-200 rounded mb-4"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button onclick="fetchNews(true)" class="border-2 border-gray-200 hover:border-primary hover:text-primary text-gray-600 font-semibold px-8 py-3 rounded-full transition">
+                        Load More Gossip
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="lg:w-1/3 space-y-8 sticky top-24 self-start">
+                
+                <!-- Ad Widget 1 -->
+                <div class="bg-gradient-to-br from-primary to-pink-600 rounded-2xl p-6 text-white text-center shadow-lg transform hover:scale-[1.02] transition cursor-pointer" onclick="window.open('https://omg10.com/4/10565898', '_blank')">
+                    <h4 class="font-bold text-xl mb-2">Exclusive Content!</h4>
+                    <p class="text-sm opacity-90 mb-4">Unlock premium lifestyle tips and celebrity secrets now.</p>
+                    <button class="bg-white text-primary px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">
+                        Access Now
+                    </button>
+                    <div class="mt-2 text-[10px] opacity-70">Sponsored Ad</div>
+                </div>
+
+                <!-- Trending Hashtags -->
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                    <h4 class="font-serif font-bold text-lg mb-4 flex items-center gap-2">
+                        <ion-icon name="trending-up-outline" class="text-primary"></ion-icon> 
+                        Trending Now
+                    </h4>
+                    <div class="flex flex-wrap gap-2" id="hashtags-container">
+                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer">#Hollywood</span>
+                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer">#RoyalFamily</span>
+                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer">#MetGala</span>
+                        <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer">#Wellness</span>
+                    </div>
+                </div>
+
+                <!-- Newsletter (Fake) -->
+                <div class="bg-gray-900 rounded-2xl p-6 text-white">
+                    <h4 class="font-serif font-bold text-lg mb-2">The Daily Juice</h4>
+                    <p class="text-gray-400 text-sm mb-4">Get the spiciest gossip delivered to your inbox.</p>
+                    <div class="relative">
+                        <input type="email" placeholder="Your email" class="w-full bg-gray-800 border-none rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary outline-none">
+                        <button class="absolute right-2 top-2 bg-primary p-1.5 rounded-md hover:bg-red-600 transition">
+                            <ion-icon name="send"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="font-serif font-bold text-2xl text-gray-900 mb-4">TrendingPulse</h2>
+            <div class="flex justify-center gap-6 mb-8 text-gray-500">
+                <a href="#" class="hover:text-primary"><ion-icon name="logo-instagram" size="large"></ion-icon></a>
+                <a href="#" class="hover:text-primary"><ion-icon name="logo-twitter" size="large"></ion-icon></a>
+                <a href="#" class="hover:text-primary"><ion-icon name="logo-facebook" size="large"></ion-icon></a>
+            </div>
+            <p class="text-gray-400 text-sm">
+                &copy; 2026 TrendingPulse. All rights reserved. <br>
+                Content generated by AI. Use for entertainment purposes only.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
