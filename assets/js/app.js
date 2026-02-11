@@ -1,8 +1,8 @@
-const GROQ_API_KEY = "gsk_YOUR_API_KEY_HERE"; // Placeholder - Use backend for real key
+const GROQ_API_KEY = "gsk_YOUR_API_KEY_HERE"; // Placeholder
 const MONETAG_LINK = "https://omg10.com/4/10565898";
 
 // ---------------------------------------------------------
-// 1. DATA: CREATIVE & ROBUST CONTENT (No External JSON Dependency)
+// 1. DATA: CREATIVE & ROBUST CONTENT
 // ---------------------------------------------------------
 
 const TRENDING_STORIES = [
@@ -67,13 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Universal Mobile Menu
     setupMobileMenu();
-
-    // Universal Ad Clicks
-    setupAdClicks();
 });
 
 // ---------------------------------------------------------
-// 3. HOME PAGE RENDERING
+// 3. HOME PAGE RENDERING & FILTERING
 // ---------------------------------------------------------
 
 function initHomePage() {
@@ -81,28 +78,66 @@ function initHomePage() {
     const grid = document.getElementById("articles-grid");
     const featured = document.getElementById("featured-section");
 
-    // 1. Render Featured Story (First Item)
-    const featStory = TRENDING_STORIES[0];
+    // Check for Hash (Filtering)
+    const hash = window.location.hash; // e.g. "#gossip"
+
+    // 1. Render Featured Story (First Item) - Only show on main home, hide on filters
     if (featured) {
-        document.getElementById("featured-image").src = featStory.image;
-        document.getElementById("featured-title").innerText = featStory.title;
-        document.getElementById("featured-snippet").innerText = featStory.snippet;
-        document.getElementById("featured-link").href = `article.html?q=${encodeURIComponent(featStory.title)}`;
-        featured.classList.remove("hidden");
+        if (!hash || hash === '#') {
+            const featStory = TRENDING_STORIES[0];
+            document.getElementById("featured-image").src = featStory.image;
+            document.getElementById("featured-title").innerText = featStory.title;
+            document.getElementById("featured-snippet").innerText = featStory.snippet;
+            document.getElementById("featured-link").href = `article.html?q=${encodeURIComponent(featStory.title)}`;
+            featured.classList.remove("hidden");
+        } else {
+            featured.classList.add("hidden");
+        }
     }
 
-    // 2. Render Grid (Rest of Items)
-    grid.innerHTML = "";
-    TRENDING_STORIES.slice(1).forEach((story, index) => {
-        // Insert Ad Card (Creative Break)
-        if (index === 1) {
-            grid.innerHTML += createAdCard();
-        }
-        grid.innerHTML += createArticleCard(story);
-    });
+    // 2. Filter & Render Grid
+    let storiesToRender = TRENDING_STORIES;
+    let sectionTitle = "Latest Stories";
 
-    // 3. Setup Hashtags
+    if (hash === '#trending') {
+        // Show Viral, Fashion, Tech
+        storiesToRender = TRENDING_STORIES.filter(s => ['Viral', 'Tech', 'Fashion'].includes(s.category));
+        sectionTitle = "Trending Now";
+    } else if (hash === '#gossip') {
+        // Show Gossip, Royalty, Lifestyle
+        storiesToRender = TRENDING_STORIES.filter(s => ['Gossip', 'Royalty', 'Lifestyle', 'Travel'].includes(s.category));
+        sectionTitle = "Latest Gossip";
+    }
+
+    // Update section title if element exists
+    const titleEl = document.querySelector('h3.font-serif');
+    if (titleEl) titleEl.innerText = sectionTitle;
+
+    // Render Items
+    grid.innerHTML = "";
+    if (storiesToRender.length === 0) {
+        grid.innerHTML = `<p class="text-center col-span-2 text-gray-500 py-10">No stories found in this category.</p>`;
+    } else {
+        storiesToRender.forEach((story, index) => {
+            // Insert Ad Card (Creative Break) - only on main feed
+            if (index === 1 && !hash) {
+                grid.innerHTML += createAdCard();
+            }
+            grid.innerHTML += createArticleCard(story);
+        });
+    }
+
+    // 3. Setup Hashtags & Nav Listeners
     setupHashtags();
+    setupNavFilters();
+}
+
+function setupNavFilters() {
+    // Listen for hash changes (clicking nav links)
+    window.addEventListener('hashchange', () => {
+        window.scrollTo(0, 0);
+        initHomePage(); // Re-render based on new hash
+    });
 }
 
 function createArticleCard(story) {
@@ -148,7 +183,7 @@ function createAdCard() {
 }
 
 // ---------------------------------------------------------
-// 4. ARTICLE PAGE LOGIC
+// 4. ARTICLE PAGE LOGIC (Context Aware)
 // ---------------------------------------------------------
 
 function initArticlePage() {
@@ -164,20 +199,21 @@ function initArticlePage() {
     // Update Author
     if (authorEl) authorEl.innerText = "Chathun Rajapaksha";
 
-    // Update Title
+    // Update Title & Image
     document.title = `${topic} - Trending Pulse`;
     document.getElementById("article-title").innerText = topic;
 
-    // Find matching story for image or use random default
+    // Find matching story
     const matchedStory = TRENDING_STORIES.find(s => s.title === topic) || TRENDING_STORIES[0];
+    const category = matchedStory.category || "General";
+
     const imgEl = document.getElementById("article-image");
-
-    // Use robust image placeholder if random image fails
     imgEl.src = matchedStory.image || "https://placehold.co/800x400?text=Trending+News";
-    imgEl.onerror = () => { imgEl.src = "https://placehold.co/800x400?text=Image+Unavailable"; };
 
-    // Generate Content
+    // Generate Context-Aware Content
     const contentEl = document.getElementById("article-content");
+
+    // Loading State
     contentEl.innerHTML = `
         <div class="space-y-4 animate-pulse">
             <div class="h-4 bg-gray-100 rounded w-full"></div>
@@ -186,24 +222,51 @@ function initArticlePage() {
         </div>
     `;
 
-    // Simulate "Writing" Delay for Effect
+    // Simulate "Writing" Delay
     setTimeout(() => {
-        contentEl.innerHTML = generateCreativeArticleHTML(topic);
+        contentEl.innerHTML = generateContextualArticle(topic, category);
+        loadRelevantReadNext(category, topic); // Load RELEVANT suggestions
     }, 500);
 }
 
-function generateCreativeArticleHTML(topic) {
+function generateContextualArticle(topic, category) {
     const randomViewCount = Math.floor(Math.random() * (50000 - 10000) + 10000).toLocaleString();
+
+    // Vocabulary Sets
+    const vocab = {
+        "Food": ["chef", "flavor profile", "ingredients", "tasty", "kitchen", "recipe", "delicious", "culinary", "restaurant", "menu"],
+        "Fashion": ["runway", "designer", "couture", "trend", "style", "aesthetic", "collection", "vogue", "wardrobe", "fabric"],
+        "Tech": ["silicon valley", "algorithm", "innovation", "startup", "digital", "feature", "app", "user base", "software", "tech giant"],
+        "Royalty": ["palace", "monarch", "protocol", "scandal", "prince", "crown", "tradition", "heir", "castle", "royal duties"],
+        "Travel": ["destination", "booking", "view", "tourist", "local gem", "flight", "resort", "vacation", "passport", "itinerary"]
+    };
+
+    // fallback vocab
+    const defaultVocab = ["trend", "moment", "social media", "reaction", "update", "scene", "world", "story", "news", "buzz"];
+
+    // Select words based on topic keywords
+    let selectedVocab = defaultVocab;
+    const lowerTopic = topic.toLowerCase();
+
+    if (lowerTopic.includes("pasta") || lowerTopic.includes("recipe") || category === "Viral") selectedVocab = vocab.Food;
+    else if (lowerTopic.includes("fashion") || category === "Fashion") selectedVocab = vocab.Fashion;
+    else if (lowerTopic.includes("tech") || lowerTopic.includes("ai") || category === "Tech") selectedVocab = vocab.Tech;
+    else if (lowerTopic.includes("royal") || category === "Royalty") selectedVocab = vocab.Royalty;
+    else if (lowerTopic.includes("travel") || lowerTopic.includes("nyc")) selectedVocab = vocab.Travel;
+
+    // Helper to get random word
+    const w = () => selectedVocab[Math.floor(Math.random() * selectedVocab.length)];
 
     return `
         <p class="lead text-xl text-gray-600 mb-8 font-serif italic border-l-4 border-primary pl-4">
-            "It’s the story everyone is whispering about at brunch this weekend. <strong>${topic}</strong> has officially disrupted the timeline."
+            "It’s the <strong>${w()}</strong> everyone is whispering about. <strong>${topic}</strong> has officially disrupted the ${w()} world."
         </p>
         
-        <h2 class="text-2xl font-bold mb-4 font-serif">The Viral Moment</h2>
+        <h2 class="text-2xl font-bold mb-4 font-serif">The ${category} Moment</h2>
         <p class="mb-6">
-            If you've opened any social media app in the last 24 hours, you've seen it. The hashtags are trending, the memes are flowing, and the takes are piping hot. 
-            Industry insiders in both London and New York are scrambling to make sense of what just happened.
+            If you've checked the latest ${w()} news in the last 24 hours, you've seen it. The hashtags are trending and the ${w()} community is buzzing. 
+            Insiders are calling it a "game-changer" for the modern ${w()}. 
+            Sources say this ${w()} could change everything we know about the industry.
         </p>
 
         <div class="my-10 p-6 bg-gray-50 rounded-2xl border border-gray-100 text-center">
@@ -214,14 +277,9 @@ function generateCreativeArticleHTML(topic) {
 
         <h2 class="text-2xl font-bold mb-4 font-serif">What This Means For You</h2>
         <p class="mb-6">
-            Beyond the noise, there's a real shift happening here. Whether it's a fleeting trend or a permanent change, one thing is clear: 
-            the conversation has changed. Experts suggest this could redefine how we look at lifestyle trends for the rest of 2026.
-        </p>
-
-        <h2 class="text-2xl font-bold mb-4 font-serif">The Internet Reacts</h2>
-        <p class="mb-8">
-            "I haven't seen a reaction like this since the Met Gala," says one prominent influencer. 
-            The consensus? You either love it, or you're wrong.
+            Beyond the hype, there's a real ${w()} shift happening here. Whether it's a fleeting ${w()} or a permanent change, one thing is clear: 
+            this is redefining what we expect from a top-tier ${w()} experience in 2026. 
+            Analysts predict that every major ${w()} will try to copy this strategy soon.
         </p>
 
         <!-- Dynamic Ad Insert -->
@@ -236,6 +294,38 @@ function generateCreativeArticleHTML(topic) {
     `;
 }
 
+function loadRelevantReadNext(currentCategory, currentTitle) {
+    const relatedDiv = document.getElementById("related-articles");
+    if (!relatedDiv) return;
+
+    // Filter stories to find ones in the SAME category, excluding current one
+    let relatedStories = TRENDING_STORIES.filter(s => s.category === currentCategory && s.title !== currentTitle);
+
+    // If fewer than 2, fill with generic trending ones
+    if (relatedStories.length < 2) {
+        relatedStories = [...relatedStories, ...TRENDING_STORIES.filter(s => s.title !== currentTitle)].slice(0, 2);
+    } else {
+        relatedStories = relatedStories.slice(0, 2);
+    }
+
+    relatedDiv.innerHTML = "";
+
+    relatedStories.forEach(item => {
+        relatedDiv.innerHTML += `
+            <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location.href='article.html?q=${encodeURIComponent(item.title)}'" role="link" tabindex="0">
+                <img src="${item.image}" 
+                     class="w-20 h-20 object-cover rounded-lg bg-gray-100" 
+                     alt="${item.title}"
+                     loading="lazy">
+                <div>
+                    <h4 class="font-bold text-sm group-hover:text-primary leading-tight transition">${item.title}</h4>
+                    <span class="text-xs text-gray-400 bg-gray-100 px-1 py-0.5 rounded ml-1">${item.category}</span>
+                </div>
+            </div>
+        `;
+    });
+}
+
 // ---------------------------------------------------------
 // 5. UTILITY FUNCTIONS
 // ---------------------------------------------------------
@@ -247,7 +337,6 @@ function setupMobileMenu() {
         btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
             const icon = btn.querySelector('ion-icon');
-            // If icon exists, toggle its name
             if (icon) {
                 icon.name = menu.classList.contains('hidden') ? 'menu-outline' : 'close-outline';
             }
