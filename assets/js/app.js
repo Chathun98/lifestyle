@@ -191,15 +191,22 @@ function renderFeed(articles) {
 // 5. ARTICLE GENERATION (WITH AUTO-WRITER)
 // ---------------------------------------------------------
 
+// ---------------------------------------------------------
+// 5. ARTICLE GENERATION (WITH AUTO-WRITER)
+// ---------------------------------------------------------
+
 async function generateArticle(topic) {
     const titleEl = document.getElementById("article-title");
     const contentEl = document.getElementById("article-content");
     const imgEl = document.getElementById("article-image");
+    const authorEl = document.querySelector('[itemprop="author"] [itemprop="name"]'); // SEO friendly selector
 
     if (!topic) return;
 
     // Set Basics
     titleEl.innerText = topic;
+    if (authorEl) authorEl.innerText = "Chathun Rajapaksha"; // Set Human Author Name
+
     imgEl.onerror = () => window.handleImageError(imgEl);
     imgEl.alt = `Cover image for ${topic}`;
     imgEl.src = getImageUrl(topic.split(' ')[0]);
@@ -214,7 +221,7 @@ async function generateArticle(topic) {
     `;
 
     // Try API for Text
-    const prompt = `Write a fun 400-word blog post about "${topic}" (Lifestyle/Gossip). Use <h2> and <p> tags. No markdown.`;
+    const prompt = `Write a fun 400-word blog post about "${topic}" (Lifestyle/Gossip). Use <h2> and <p> tags. No markdown. Write as Chathun Rajapaksha, a trendy lifestyle columnist.`;
     let content = await callGroqAPI([{ role: "user", content: prompt }]);
 
     // If API Fails -> Use Local Generator (No empty pages!)
@@ -251,6 +258,13 @@ async function generateArticle(topic) {
 function generateLocalArticle(topic) {
     const keywords = ["shocking", "viral", "exclusive", "trending", "massive"];
     const randomKey = keywords[Math.floor(Math.random() * keywords.length)];
+    const captions = [
+        "captured moments before the announcement.",
+        "seen in an exclusive photo obtained by our team.",
+        "visualizing the trend taking over social media.",
+        "as depicted in recent viral posts."
+    ];
+    const randomCaption = captions[Math.floor(Math.random() * captions.length)];
 
     return `
         <p class="lead text-xl text-gray-600 mb-6">Breaking news from the world of lifestyle and entertainment: <strong>${topic}</strong> has officially gone ${randomKey}!</p>
@@ -261,8 +275,16 @@ function generateLocalArticle(topic) {
         <p>"It's basically the biggest thing to happen this month," says one insider. "You can't scroll through your feed without seeing it."</p>
 
         <div class="my-8">
-            <img src="https://picsum.photos/800/400?random=${Math.floor(Math.random() * 1000)}" class="w-full rounded-xl shadow-md" alt="Visual representation of ${topic}" loading="lazy">
-            <p class="text-xs text-gray-400 mt-2 text-center">Visual representation</p>
+            <figure>
+                <img src="https://picsum.photos/800/400?random=${Math.floor(Math.random() * 1000)}" 
+                     class="w-full rounded-xl shadow-md" 
+                     alt="Visual representation of ${topic}" 
+                     loading="lazy"
+                     onerror="this.src='https://placehold.co/800x400?text=Image+Unavailable'">
+                <figcaption class="text-xs text-gray-500 mt-2 text-center italic">
+                    Above: A scene related to ${topic}, ${randomCaption}
+                </figcaption>
+            </figure>
         </div>
 
         <h2>What Fans Are Saying</h2>
